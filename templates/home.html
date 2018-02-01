@@ -1,0 +1,24 @@
+{% extends "material/base.html" %}
+{% import "material/utils.html" as util %}
+{% import "material/wtf.html" as wtf %}
+
+{% block title %}Welcome!{% endblock %}
+
+{% block content %}
+<div class="container">
+        {% if images %}
+            {% for image in images: %}
+            <div class="row">
+                    <div class="col s6 m6 l6 xl6">
+                        {{ util.card(image.description)}}
+                    </div>
+                    <div class="col s6 m6 l6 xl6">
+                            {{ util.card(image.description)}}
+                    </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {{ pagination.info }}
+        {{ pagination.links }}
+</div>
+{% endblock %}

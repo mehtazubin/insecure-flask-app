@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Blueprint
+from flask_paginate import Pagination, get_page_parameter
 from flask_material import Material
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
@@ -44,6 +45,9 @@ class ExampleForm(FlaskForm):
 
     def validate_hidden_field(form, field):
         raise ValidationError('Always wrong')
+class Image():
+    def __init__(self, description):
+        self.description = description
 
 @APP.route('/', methods=['GET', 'POST'])  
 def hello_world():
@@ -52,6 +56,16 @@ def hello_world():
         APP.logger.info(request.values)
     return render_template('login.html', form=form)
 
+@APP.route('/home')
+def home(page=1):
+    images = []
+    for i in range(100):
+        images.append(Image(str(i)))
+    images.append(Image("HELLO"))
+    images.append(Image("HOW ARE YOU"))
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    pagination = Pagination(page=page, per_page=10, total=len(images), search=False, record_name='images')
+    return render_template('home.html', images=images, per_page=10, pagination=pagination)
 if __name__ == '__main__':
     APP.run(debug=True)
   
