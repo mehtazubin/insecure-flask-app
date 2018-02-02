@@ -1,0 +1,15 @@
+{% extends "material/base.html" %}
+{% import "material/utils.html" as util %}
+{% import "material/wtf.html" as wtf %}
+
+{% block title %}Welcome!{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12 m12 l12 xl12">
+                {{ util.card('Hello world!', wtf.quick_form(form) )}}
+        </div>
+    </div>
+</div>
+{% endblock %}

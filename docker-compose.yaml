@@ -1,0 +1,17 @@
+version: "3"
+services:
+  db:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+  web:
+    links:
+      - db
+    depends_on:
+      - db
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    working_dir: /web
+    ports:
+      - "8080:5050"
