@@ -2,17 +2,14 @@
 {% import "material/utils.html" as util %}
 {% import "material/wtf.html" as wtf %}
 
-{% block title %}Welcome!{% endblock %}
+{% block title %}Registration{% endblock %}
 
 {% block content %}
 <div class="container">
         <div class="row" style="margin-top: 30%;">
                 <div class="col s12 m12 l12 xl12">
-                    {{ util.card('Hello world!', wtf.quick_form(form) )}}
+                    {{ util.card(wtf.quick_form(form, action='/register') )}}
                 </div>
-        </div>
-        <div class="row" style="position:relative">
-            <a href="/register">Register</a>
         </div>
 </div>
 {% endblock %}
