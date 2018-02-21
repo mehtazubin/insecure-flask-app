@@ -5,8 +5,9 @@ RUN apk update && \
     apk add gcc python3-dev musl-dev && \
     apk add postgresql-dev && \
     apk del build-deps
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 COPY . /web
 WORKDIR /web
-RUN pip install -r requirements.txt && \
-    chmod a+x run.sh
+RUN chmod a+x run.sh
 ENTRYPOINT ["./run.sh"]

@@ -1,0 +1,53 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Blueprint	../web/app.py	/^from flask import Flask, render_template, request, Blueprint$/;"	kind:namespace	line:1
+BooleanField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+ExampleForm	../web/app.py	/^class ExampleForm(FlaskForm):$/;"	kind:class	line:25
+FileField	../web/app.py	/^from flask_wtf.file import FileField$/;"	kind:namespace	line:5
+Flask	../web/app.py	/^from flask import Flask, render_template, request, Blueprint$/;"	kind:namespace	line:1
+FlaskForm	../web/app.py	/^from flask_wtf import FlaskForm$/;"	kind:namespace	line:4
+FormField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+HiddenField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+Image	../web/app.py	/^class Image():$/;"	kind:class	line:43
+LoginForm	../web/app.py	/^class LoginForm(FlaskForm): $/;"	kind:class	line:17
+Material	../web/app.py	/^from flask_material import Material$/;"	kind:namespace	line:3
+Pagination	../web/app.py	/^from flask_paginate import Pagination, get_page_parameter$/;"	kind:namespace	line:2
+PasswordField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+RadioField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+RegisterForm	../web/app.py	/^class RegisterForm(FlaskForm): $/;"	kind:class	line:21
+Required	../web/app.py	/^from wtforms.validators import Required$/;"	kind:namespace	line:8
+SubmitField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+TextField	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+ValidationError	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
+__init__	../web/app.py	/^    def __init__(self, description):$/;"	kind:member	line:44
+app	../web/app.py	/^app = Flask(__name__)$/;"	kind:variable	line:11
+app.py	../web/app.py	1;"	kind:file	line:1
+checkbox_field	../web/app.py	/^    checkbox_field = BooleanField('This is a checkbox',$/;"	kind:variable	line:36
+description	../web/app.py	/^                                  description='Checkboxes can be tricky.')$/;"	kind:variable	line:37
+field1	../web/app.py	/^    field1 = TextField('First Field', description='This is field one.')$/;"	kind:variable	line:26
+field2	../web/app.py	/^    field2 = TextField('Second Field', description='This is field two.',$/;"	kind:variable	line:27
+get_database	../web/app.py	/^def get_database():$/;"	kind:function	line:47
+get_page_parameter	../web/app.py	/^from flask_paginate import Pagination, get_page_parameter$/;"	kind:namespace	line:2
+hello_world	../web/app.py	/^def hello_world():$/;"	kind:function	line:53
+hidden_field	../web/app.py	/^    hidden_field = HiddenField('You cannot see this', description='Nope')$/;"	kind:variable	line:29
+home	../web/app.py	/^def home(page=1):$/;"	kind:function	line:71
+password	../web/app.py	/^    password = PasswordField('Password', [validators.required()])$/;"	kind:variable	line:19
+password	../web/app.py	/^    password = PasswordField('Password', [validators.required()])$/;"	kind:variable	line:23
+photo	../web/app.py	/^    photo = FileField('Sample upload')$/;"	kind:variable	line:39
+psycopg2	../web/app.py	/^import psycopg2$/;"	kind:namespace	line:9
+radio_field	../web/app.py	/^    radio_field = RadioField('This is a radio field', choices=[$/;"	kind:variable	line:30
+register	../web/app.py	/^def register():$/;"	kind:function	line:60
+render_template	../web/app.py	/^from flask import Flask, render_template, request, Blueprint$/;"	kind:namespace	line:1
+request	../web/app.py	/^from flask import Flask, render_template, request, Blueprint$/;"	kind:namespace	line:1
+submit	../web/app.py	/^    submit = SubmitField(label="Create Account")$/;"	kind:variable	line:24
+submit	../web/app.py	/^    submit = SubmitField(label="Log In")$/;"	kind:variable	line:20
+submit_button	../web/app.py	/^    submit_button = SubmitField('Submit Form')$/;"	kind:variable	line:41
+upload	../web/app.py	/^def upload():$/;"	kind:function	line:78
+username	../web/app.py	/^    username = TextField('Username', [validators.required()])$/;"	kind:variable	line:18
+username	../web/app.py	/^    username = TextField('Username', [validators.required()])$/;"	kind:variable	line:22
+validators	../web/app.py	/^                       validators=[Required()])$/;"	kind:variable	line:28
+validators	../web/app.py	/^    BooleanField, SubmitField, PasswordField, FormField, validators$/;"	kind:namespace	line:7
