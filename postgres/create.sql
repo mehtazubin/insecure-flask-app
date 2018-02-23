@@ -51,7 +51,7 @@ SET default_with_oids = false;
 CREATE TABLE images (
     oid oid NOT NULL,
     username text,
-    "time" timestamp without time zone
+    timestamp timestamp default current_timestamp
 );
 
 

@@ -5,20 +5,29 @@
 {% block title %}Welcome!{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container" style="padding: 5%;">
+        <h1>Image Feed</h1>
         {% if images %}
             {% for image in images: %}
             <div class="row">
-                    <div class="col s6 m6 l6 xl6">
-                        {{ util.card(image.description)}}
-                    </div>
-                    <div class="col s6 m6 l6 xl6">
-                            {{ util.card(image.description)}}
-                    </div>
+                <div class="col s6 m6 l6 xl6">
+                        <div class="card" style="padding: 10%;">
+                                <img src="{{image[0]}}" width="100%"/>
+                        </div>
+                </div>
+                {% if image|length == 2 %}
+                <div class="col s6 m6 l6 xl6">
+                        <div class="card" style="padding: 10%">
+                                <img src="{{image[1]}}" width="100%"/>
+                        </div>
+                </div>
+                {% endif %}
             </div>
             {% endfor %}
         {% endif %}
-        {{ pagination.info }}
-        {{ pagination.links }}
+        <div class="container" style="padding: 5%; padding-left: 25%; float: center">
+                {{ pagination.info }}
+                {{ pagination.links }}
+        </div>
 </div>
 {% endblock %}
