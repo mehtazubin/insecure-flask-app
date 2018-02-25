@@ -3,8 +3,11 @@
 {% import "material/wtf.html" as wtf %}
 
 {% block title %}Welcome!{% endblock %}
-
 {% block content %}
+<nav class="navbar purple">
+        <link rel="stylesheet" type="text/css" href="/web/static/nav.css">
+        {{nav.mynavbar.render()}}
+</nav>
 <div class="container" style="padding: 5%;">
         <h1>Image Feed</h1>
         {% if images %}

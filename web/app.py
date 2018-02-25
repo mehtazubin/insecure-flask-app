@@ -1,5 +1,8 @@
 from base64 import b64encode
 from flask import Flask, render_template, request, Blueprint, redirect, url_for
+from flask_bootstrap import Bootstrap
+from flask_nav import Nav
+from flask_nav.elements import *
 from flask_paginate import Pagination, get_page_args
 from flask_material import Material
 from flask_wtf import FlaskForm
@@ -9,8 +12,11 @@ from wtforms import TextField, HiddenField, ValidationError, RadioField,\
 from wtforms.validators import Required
 import psycopg2, os
 
+
+nav = Nav()
 app = Flask(__name__, static_url_path='/web/static')
 Material(app)
+nav.init_app(app)
 app.config['WTF_CSRF_ENABLED'] = False
 
 # straight from the wtforms docs:
@@ -23,18 +29,21 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', [validators.required()])
     submit = SubmitField(label="Create Account")
 class ExampleForm(FlaskForm):
-    field1 = TextField('First Field', description='This is field one.')
-    field2 = TextField('Second Field', description='This is field two.',
-                       validators=[Required()])
-    checkbox_field = BooleanField('This is a checkbox',
-                                  description='Checkboxes can be tricky.')
-
     photo = FileField('Sample upload')
     submit_button = SubmitField('Submit Form')
 
 class Image():
     def __init__(self, path):
         self.path = path
+
+@nav.navigation()
+def mynavbar():
+    return Navbar(
+        '',
+        View('Log Out', 'login'),
+        View('Upload', 'upload'),
+        View('Home', 'home')
+    )
 
 def get_database():
     conn = psycopg2.connect("dbname='flask' user='flask' host='db'")

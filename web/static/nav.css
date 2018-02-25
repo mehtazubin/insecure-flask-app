@@ -1,0 +1,20 @@
+nav.navbar ul li {
+    float: right;
+}
+nav {
+    color: #fff;
+    background-color: #7e57c2;
+    width: 100%;
+    height: 56px;
+    line-height: 56px
+}
+.pagination li.active {
+    background-color: #7e57c2;
+}
+
+.btn {
+    background-color: #7e57c2;
+}
+.btn:hover {
+    background-color: #b39ddb;
+}

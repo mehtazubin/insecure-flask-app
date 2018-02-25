@@ -5,9 +5,14 @@
 {% block title %}Welcome!{% endblock %}
 
 {% block content %}
+<nav class="navbar purple">
+    <link rel="stylesheet" type="text/css" href="/web/static/nav.css">
+    {{nav.mynavbar.render()}}
+</nav>
 <div class="container">
     <div class="row">
         <div class="col s12 m12 l12 xl12">
+                <link rel="stylesheet" type="text/css" href="/web/static/nav.css">
                 {{ util.card('Hello world!', wtf.quick_form(form, action='/upload') )}}
         </div>
     </div>
