@@ -33,14 +33,15 @@ class ExampleForm(FlaskForm):
     submit_button = SubmitField('Submit Form')
 
 class Image():
-    def __init__(self, path):
+    def __init__(self, path, caption):
         self.path = path
+        self.caption = caption
 
 @nav.navigation()
 def mynavbar():
     return Navbar(
         '',
-        View('Log Out', 'login'),
+        View('Login', 'login'),
         View('Upload', 'upload'),
         View('Home', 'home')
     )
@@ -49,7 +50,7 @@ def get_database():
     conn = psycopg2.connect("dbname='flask' user='flask' host='db'")
     return conn, conn.cursor()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if request.method == 'POST':
@@ -77,13 +78,12 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-@app.route('/home')
+@app.route('/')
 def home(page=1):
-    
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
     con, cursor = get_database()
-    cursor.execute("""SELECT oid FROM public.images limit %s offset %s""", (per_page, offset))
+    cursor.execute("""SELECT oid,caption FROM public.images limit %s offset %s""", (per_page, offset))
     fetched = cursor.fetchall()
     cursor.execute("""SELECT COUNT(*) FROM public.images""")
     result = cursor.fetchone()
@@ -91,17 +91,18 @@ def home(page=1):
     for i in range(0,len(fetched),2):
         l = con.lobject(fetched[i][0])
         path1 = os.path.join('/web/static/images', str(fetched[i][0]))
-        app.logger.info(path1)
+        caption1 = fetched[i][1]
         l.export(path1)
         l.close()
         if i + 1 < len(fetched):
             l = con.lobject(fetched[i + 1][0])
             path2 = os.path.join('/web/static/images', str(fetched[i + 1][0]))
+            caption2 = fetched[i + 1][1]
             l.export(path2)
             l.close()
-            images.append((path1,path2))
+            images.append((new Image(path1, caption1), new Image(path2, caption2)))
         else:
-            images.append((path1,))
+            images.append((new Image(path1, caption1),))
     con.close()
     app.logger.info(images)
     pagination = Pagination(page=page, per_page=10, total=int(result[0]), search=False, record_name='images')
