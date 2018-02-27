@@ -6,7 +6,11 @@
 {% block content %}
 <nav class="navbar purple">
         <link rel="stylesheet" type="text/css" href="/web/static/nav.css">
-        {{nav.mynavbar.render()}}
+        {% if username %}
+                {{nav.user.render()}}
+        {% else %}
+                {{nav.visitor.render()}}
+        {% endif %}
 </nav>
 <div class="container" style="padding: 5%;">
         <h1>Image Feed</h1>
@@ -16,12 +20,18 @@
                 <div class="col s6 m6 l6 xl6">
                         <div class="card" style="padding: 10%;">
                                 <img src="{{image[0].path}}" width="100%"/>
+                                <div class="card-content">
+                                        <span class="card-title black-text">{{image[0].caption}}</span>
+                                </div>
                         </div>
                 </div>
                 {% if image|length == 2 %}
                 <div class="col s6 m6 l6 xl6">
                         <div class="card" style="padding: 10%">
                                 <img src="{{image[1].path}}" width="100%"/>
+                                <div class="card-content">
+                                        <span class="card-title black-text">{{image[1].caption}}</span>
+                                </div>
                         </div>
                 </div>
                 {% endif %}

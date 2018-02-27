@@ -28,8 +28,9 @@ class RegisterForm(FlaskForm):
     username = TextField('Username', [validators.required()])
     password = PasswordField('Password', [validators.required()])
     submit = SubmitField(label="Create Account")
-class ExampleForm(FlaskForm):
+class PhotoForm(FlaskForm):
     photo = FileField('Sample upload')
+    caption = TextField('Caption')
     submit_button = SubmitField('Submit Form')
 
 class Image():
@@ -38,11 +39,19 @@ class Image():
         self.caption = caption
 
 @nav.navigation()
-def mynavbar():
+def user():
+    return Navbar(
+        '',
+        View('Logout', 'login'),
+        View('My Images', 'myimages'),
+        View('Upload', 'upload'),
+        View('Home', 'home')
+    )
+@nav.navigation()
+def visitor():
     return Navbar(
         '',
         View('Login', 'login'),
-        View('Upload', 'upload'),
         View('Home', 'home')
     )
 
@@ -62,7 +71,9 @@ def login():
         check = cur.fetchone()
         con.close()
         if check != None and check[0] == password:
-            return redirect(url_for('home'))
+            response = redirect(url_for('home'))
+            response.set_cookie('USERNAME', username)
+            return response
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -83,7 +94,7 @@ def home(page=1):
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
     con, cursor = get_database()
-    cursor.execute("""SELECT oid,caption FROM public.images limit %s offset %s""", (per_page, offset))
+    cursor.execute("""SELECT oid,caption FROM public.images ORDER BY timestamp DESC limit %s offset %s""", (per_page, offset))
     fetched = cursor.fetchall()
     cursor.execute("""SELECT COUNT(*) FROM public.images""")
     result = cursor.fetchone()
@@ -100,27 +111,58 @@ def home(page=1):
             caption2 = fetched[i + 1][1]
             l.export(path2)
             l.close()
-            images.append((new Image(path1, caption1), new Image(path2, caption2)))
+            images.append((Image(path1, caption1), Image(path2, caption2)))
         else:
-            images.append((new Image(path1, caption1),))
+            images.append((Image(path1, caption1),))
     con.close()
-    app.logger.info(images)
+    username = request.cookies.get('USERNAME')
     pagination = Pagination(page=page, per_page=10, total=int(result[0]), search=False, record_name='images')
-    return render_template('home.html', images=images, per_page=10, pagination=pagination)
+    return render_template('home.html', images=images, per_page=10, pagination=pagination, username=username)
+@app.route('/myimages')
+def myimages(page=1):
+    username = request.cookies.get('USERNAME')
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    con, cursor = get_database()
+    cursor.execute("""SELECT oid,caption FROM public.images WHERE username=%s ORDER BY timestamp DESC limit %s offset %s""", (username, per_page, offset))
+    fetched = cursor.fetchall()
+    cursor.execute("""SELECT COUNT(*) FROM public.images WHERE username=%s""", (username,))
+    result = cursor.fetchone()
+    images = []
+    for i in range(0,len(fetched),2):
+        l = con.lobject(fetched[i][0])
+        path1 = os.path.join('/web/static/images', str(fetched[i][0]))
+        caption1 = fetched[i][1]
+        l.export(path1)
+        l.close()
+        if i + 1 < len(fetched):
+            l = con.lobject(fetched[i + 1][0])
+            path2 = os.path.join('/web/static/images', str(fetched[i + 1][0]))
+            caption2 = fetched[i + 1][1]
+            l.export(path2)
+            l.close()
+            images.append((Image(path1, caption1), Image(path2, caption2)))
+        else:
+            images.append((Image(path1, caption1),))
+    con.close()
+    pagination = Pagination(page=page, per_page=10, total=int(result[0]), search=False, record_name='images')
+    return render_template('home.html', images=images, per_page=10, pagination=pagination, username=username)
 
 @app.route('/upload', methods=['GET','POST'])
 def upload():
-    if request.method == 'POST':
+    username = request.cookies.get('USERNAME')
+    if request.method == 'POST' and username:
+        caption = request.values.get('caption')
         con, cursor = get_database()
         image = request.files.get('photo')
         image.save(os.path.join('upload',image.filename))
         new = con.lobject(new_file=os.path.join('upload', image.filename))
         oid = new.oid
-        cursor.execute("""INSERT INTO public.images(oid,username) VALUES(%s, %s)""", (oid, 'test'))
+        cursor.execute("""INSERT INTO public.images(oid,username,caption) VALUES(%s, %s, %s)""", (oid, username, caption))
         new.close()
         con.commit()
         con.close()
-    form = ExampleForm()
+    form = PhotoForm()
     return render_template('upload.html', form=form)
 
 
