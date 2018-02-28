@@ -32,11 +32,15 @@ class PhotoForm(FlaskForm):
     photo = FileField('Sample upload')
     caption = TextField('Caption')
     submit_button = SubmitField('Submit Form')
+class EditForm(FlaskForm):
+    caption = TextField('Caption')
+    submit = SubmitField(label='Save')
 
 class Image():
-    def __init__(self, path, caption):
+    def __init__(self, path, caption, oid=''):
         self.path = path
         self.caption = caption
+        self.oid = oid
 
 @nav.navigation()
 def user():
@@ -118,6 +122,7 @@ def home(page=1):
     username = request.cookies.get('USERNAME')
     pagination = Pagination(page=page, per_page=10, total=int(result[0]), search=False, record_name='images')
     return render_template('home.html', images=images, per_page=10, pagination=pagination, username=username)
+
 @app.route('/myimages')
 def myimages(page=1):
     username = request.cookies.get('USERNAME')
@@ -141,12 +146,12 @@ def myimages(page=1):
             caption2 = fetched[i + 1][1]
             l.export(path2)
             l.close()
-            images.append((Image(path1, caption1), Image(path2, caption2)))
+            images.append((Image(path1, caption1, str(fetched[i][0])), Image(path2, caption2, str(fetched[i + 1][0]))))
         else:
-            images.append((Image(path1, caption1),))
+            images.append((Image(path1, caption1, str(fetched[i][0])),))
     con.close()
     pagination = Pagination(page=page, per_page=10, total=int(result[0]), search=False, record_name='images')
-    return render_template('home.html', images=images, per_page=10, pagination=pagination, username=username)
+    return render_template('images.html', images=images, per_page=10, pagination=pagination, username=username)
 
 @app.route('/upload', methods=['GET','POST'])
 def upload():
@@ -165,6 +170,27 @@ def upload():
     form = PhotoForm()
     return render_template('upload.html', form=form)
 
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    app.logger.info(request.values)
+    oid = request.values.get('oid')
+    if request.method == 'POST':
+        new_caption = request.values.get('caption')
+        app.logger.info(oid)
+        con, cursor = get_database()
+        cursor.execute("""UPDATE public.images SET caption=%s WHERE oid=%s""", (new_caption, oid))
+        con.commit()
+        con.close()
+        return redirect(url_for('myimages'))
+    form = EditForm()
+    con, cursor = get_database()
+    cursor.execute("""SELECT * FROM public.images WHERE oid=%s""", (oid,))
+    result = cursor.fetchone()
+    l = con.lobject(int(oid))
+    path = os.path.join('/web/static/images', str(result[0]))
+    l.export(path)
+    con.close()
+    return render_template('edit.html', form=form, image=Image(path, result[2], str(result[0])))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
