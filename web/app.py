@@ -80,6 +80,12 @@ def login():
             return response
     return render_template('login.html', form=form)
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    response = redirect(url_for('home'))
+    response.set_cookie('USERNAME','', expires=0)
+    return response
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -191,6 +197,16 @@ def edit():
     l.export(path)
     con.close()
     return render_template('edit.html', form=form, image=Image(path, result[2], str(result[0])))
+
+@app.route('/delete', methods=['GET'])
+def edit():
+    oid = request.values.get('oid')
+    if oid:
+        con, cursor = get_database()
+        cursor.execute("""DELETE FROM public.images WHERE oid=%s""", (oid,))
+        con.commit()
+        con.close()
+    return redirect(url_for('myimages'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
