@@ -13,13 +13,13 @@
         {% endif %}
 </nav>
 <div class="container" style="padding: 5%;">
-        <h1>Image Feed</h1>
+        <h1>My Image Feed</h1>
         {% if images %}
             {% for image in images: %}
             <div class="row">
                 <div class="col s6 m6 l6 xl6">
                         <div class="card" style="padding: 10%;">
-                                <img src="{{image[0].path}}" width="100%"/>
+                                <img src="{{resized_img_src(image[0].path, width='400px', height='400px', mode='crop', quality=75, enlarge=True)}}" width='100%'/>
                                 <div class="card-content">
                                         <span class="card-title black-text">{{image[0].caption}}</span>
                                 </div>
@@ -32,7 +32,7 @@
                 {% if image|length == 2 %}
                 <div class="col s6 m6 l6 xl6">
                         <div class="card" style="padding: 10%">
-                                <img src="{{image[1].path}}" width="100%"/>
+                                <img src="{{resized_img_src(image[1].path, width='400px', height='400px', mode='crop', quality=75, enlarge=True)}}" width="100%"/>
                                 <div class="card-content">
                                         <span class="card-title black-text">{{image[1].caption}}</span>
                                 </div>
