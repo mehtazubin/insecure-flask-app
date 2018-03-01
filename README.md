@@ -1,4 +1,4 @@
-# unsecure-flask-app
+# insecure-flask-app
 
 ## Running
 
