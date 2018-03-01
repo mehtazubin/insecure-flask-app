@@ -4,14 +4,6 @@ services:
     build:
       context: ./postgres
       dockerfile: Dockerfile
-  admin:
-    links:
-      - db
-    depends_on:
-      - db
-    image: fenglc/pgadmin4:latest
-    ports:
-      - "5050:5050"
   web:
     links:
       - db
