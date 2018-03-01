@@ -10,5 +10,6 @@ RUN pip install -r requirements.txt
 RUN (stat /tmp/Flask-Images || git clone --depth 1 https://github.com/wzuo/Flask-Images /tmp/Flask-Images) && pip install -e /tmp/Flask-Images
 COPY . /web
 WORKDIR /web
-RUN chmod a+x run.sh
+RUN chmod a+x run.sh && \
+    mkdir /web/static/images
 ENTRYPOINT ["./run.sh"]
