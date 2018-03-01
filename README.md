@@ -30,3 +30,10 @@ To stop, run this command from the root directory of the project:
 To stop and remove all previous data, run this command from the root directory of the project:
 
 ```docker-compose  down```
+
+## Code Files
+
+The flask app code is in web/app.py
+All of the html views are in web/templates
+The Database Creation file is in postgres/create.sql
+The Docker Build files are in postgres and web for database and app respectively
