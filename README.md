@@ -3,7 +3,9 @@
 ## Running
 
 In order to run this project you need to install two tools:
-docker([Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows), [Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac)) [docker-compose](https://github.com/docker/compose/releases/tag/1.19.0)
+docker([Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows), [Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac))
+
+[docker-compose](https://github.com/docker/compose/releases/tag/1.19.0)
 
 Once You Install those two, enter these commands from the root directory:
 
