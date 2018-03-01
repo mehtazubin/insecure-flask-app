@@ -31,7 +31,7 @@ def get_database():
 def val_username():
     def _val_username(form, field):
         con, cursor = get_database()
-        cursor.execute("""SELECT * FROM public.users WHERE username=%s""", (field.data,))
+        cursor.execute("""SELECT * FROM public.users WHERE username=%s""", (field.data,)) #checks is username present in db
         if cursor.fetchone():
             con.close()
             raise ValidationError("Username is already taken")
@@ -114,12 +114,12 @@ def login():
         username = request.values.get('username')
         password = request.values.get('password')
         con, cur = get_database()
-        cur.execute('SELECT password FROM public.users WHERE username=%s', (username,))
+        cur.execute('SELECT password FROM public.users WHERE username=%s', (username,)) #fetches password from database for a user
         check = cur.fetchone()
         con.close()
         if check != None and check[0] == password:
             response = redirect(url_for('home'))
-            response.set_cookie('USERNAME', username)
+            response.set_cookie('USERNAME', username) #sets username cookie
             return response
     return render_template('login.html', form=form)
 
@@ -137,7 +137,7 @@ def register():
     if request.method == 'POST' and form.validate_on_submit():
         con, cursor = get_database()
         cursor.execute("""INSERT INTO public.users VALUES(%s, %s)""", (request.values.get('username')
-            , request.values.get('password')))
+            , request.values.get('password'))) #inserts new username and password into the db
         con.commit()
         con.close()
         return redirect(url_for('login'))
@@ -152,9 +152,9 @@ def upload():
         con, cursor = get_database()
         image = request.files.get('photo')
         image.save(os.path.join('upload',image.filename))
-        new = con.lobject(new_file=os.path.join('upload', image.filename))
+        new = con.lobject(new_file=os.path.join('upload', image.filename)) #creates a large object in database
         oid = new.oid
-        cursor.execute("""INSERT INTO public.images(oid,username,caption) VALUES(%s, %s, %s)""", (oid, username, caption))
+        cursor.execute("""INSERT INTO public.images(oid,username,caption) VALUES(%s, %s, %s)""", (oid, username, caption)) #inserts oid for large object in image table
         new.close()
         con.commit()
         con.close()
@@ -168,19 +168,19 @@ def edit():
     if request.method == 'POST':
         new_caption = request.values.get('caption')
         con, cursor = get_database()
-        cursor.execute("""UPDATE public.images SET caption=%s WHERE oid=%s""", (new_caption, oid))
+        cursor.execute("""UPDATE public.images SET caption=%s WHERE oid=%s""", (new_caption, oid)) #updates image table with new caption
         con.commit()
         con.close()
         return redirect(url_for('myimages'))
     form = EditForm()
     con, cursor = get_database()
-    cursor.execute("""SELECT * FROM public.images WHERE oid=%s""", (oid,))
+    cursor.execute("""SELECT * FROM public.images WHERE oid=%s""", (oid,)) #fetches image info (caption, userna,e)
     result = cursor.fetchone()
-    l = con.lobject(int(oid))
+    l = con.lobject(int(oid)) #fetches image from db
     path = os.path.join('/web/static/images', str(result[0]))
-    l.export(path)
+    l.export(path) #stores image in local storage
     con.close()
-    return render_template('edit.html', form=form, image=Image(path, result[2], str(result[0])))
+    return render_template('edit.html', form=form, image=Image(path, result[2], str(result[0]))) #passes image info and editform to the edit.html view template
 
 #Allows a user to delete their image from the database
 @app.route('/delete', methods=['GET'])
@@ -188,7 +188,7 @@ def delete():
     oid = request.values.get('oid')
     if oid:
         con, cursor = get_database()
-        cursor.execute("""DELETE FROM public.images WHERE oid=%s""", (oid,))
+        cursor.execute("""DELETE FROM public.images WHERE oid=%s""", (oid,)) #deleted image oid from db, markes image ready for deletion
         con.commit()
         con.close()
     return redirect(url_for('myimages'))
@@ -197,18 +197,19 @@ def delete():
 @app.route('/')
 def home(page=1):
     page, per_page, offset = get_page_args(page_parameter='page',
-                                           per_page_parameter='per_page')
+                                           per_page_parameter='per_page') #pagination info retrieval
     con, cursor = get_database()
-    cursor.execute("""SELECT oid,caption FROM public.images ORDER BY timestamp DESC limit %s offset %s""", (per_page, offset))
+    cursor.execute("""SELECT oid,caption FROM public.images ORDER BY timestamp DESC limit %s offset %s""", 
+        (per_page, offset)) #fetches all images ordered by time limited by 10 per page and offset by page number
     fetched = cursor.fetchall()
     cursor.execute("""SELECT COUNT(*) FROM public.images""")
     result = cursor.fetchone()
     images = []
-    for i in range(0,len(fetched),2):
+    for i in range(0,len(fetched),2): #loops through all retrieved rows
         l = con.lobject(fetched[i][0])
         path1 = os.path.join('/web/static/images', str(fetched[i][0]))
         caption1 = fetched[i][1]
-        l.export(path1)
+        l.export(path1) #stores image in local storage
         l.close()
         if i + 1 < len(fetched):
             l = con.lobject(fetched[i + 1][0])
@@ -216,22 +217,23 @@ def home(page=1):
             caption2 = fetched[i + 1][1]
             l.export(path2)
             l.close()
-            images.append((Image(path1, caption1), Image(path2, caption2)))
+            images.append((Image(path1, caption1), Image(path2, caption2))) #creates tuple of 2 Image Class objects (look above for reference) to display 2 images per row
         else:
-            images.append((Image(path1, caption1),))
+            images.append((Image(path1, caption1),)) #if total number of images is odd, then the last tuple only has one Image Class object
     con.close()
-    username = request.cookies.get('USERNAME')
+    username = request.cookies.get('USERNAME') #to see if its a logged in user or a visitor
     pagination = Pagination(page=page, per_page=10, total=int(result[0]), search=False, record_name='images')
     return render_template('home.html', images=images, per_page=10, pagination=pagination, username=username)
 
 #Users View to look at all of their images
+#Most of the code is the same as the home function save for the query which also adds the username constraint for fetched items
 @app.route('/myimages')
 def myimages(page=1):
     username = request.cookies.get('USERNAME')
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
     con, cursor = get_database()
-    cursor.execute("""SELECT oid,caption FROM public.images WHERE username=%s ORDER BY timestamp DESC limit %s offset %s""", (username, per_page, offset))
+    cursor.execute("""SELECT oid,caption FROM public.images WHERE username=%s ORDER BY timestamp DESC limit %s offset %s""", (username, per_page, offset)) #same query as visitor images page but also constrained by username
     fetched = cursor.fetchall()
     cursor.execute("""SELECT COUNT(*) FROM public.images WHERE username=%s""", (username,))
     result = cursor.fetchone()
