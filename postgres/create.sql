@@ -4,7 +4,7 @@
 
 -- Dumped from database version 10.1
 -- Dumped by pg_dump version 10.1
-CREATE USER flask;
+CREATE USER flask WITH password 'flaskdb';
 CREATE DATABASE flask;
 \c flask;
 GRANT ALL PRIVILEGES ON DATABASE flask TO flask;

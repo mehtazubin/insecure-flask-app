@@ -11,5 +11,6 @@ RUN (stat /tmp/Flask-Images || git clone --depth 1 https://github.com/wzuo/Flask
 COPY . /web
 WORKDIR /web
 RUN chmod a+x run.sh && \
-    mkdir /web/static/images
+    mkdir /web/static/images && \
+    mkdir upload
 ENTRYPOINT ["./run.sh"]
